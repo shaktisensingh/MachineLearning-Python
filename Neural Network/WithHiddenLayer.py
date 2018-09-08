@@ -6,10 +6,11 @@ import matplotlib.pyplot as plot
 def main():
     alpha = 0.1  # Learning rate
     file_name = 'XOR.txt'
-    costs = np.zeros((1,2))  # Initilization of costs array
+    costs = np.zeros((1, 2))  # Initilization of costs array
     size_input, size_hidden, size_output = defineLayers()
     x, y = readData(file_name)
     weights = initializeWeights(size_input, size_hidden, size_output)
+
     for i in np.arange(1000):
         result_f = forwardProp(weights, x)
         
@@ -18,10 +19,19 @@ def main():
         
         gradients = backProp(weights, result_f, x, y)
         weights = update_weights(weights, gradients, alpha)
-        
-    plotCost(costs)  # plots cost vs iterations
 
-    # Prints final weights
+    print_weights(size_input, size_hidden, size_output, weights)  # Prints final weights
+    plotCost(costs)  # plots cost vs iterations
+    return
+
+def plotCost(costs):
+    plot.scatter(costs[:, 0], costs[:, 1])
+    plot.xlabel('Iterantion')
+    plot.ylabel('Cost')
+    plot.show(block = False)
+    return
+
+def print_weights(size_input, size_hidden, size_output, weights):
     print('W1')
     for i in np.arange(size_input):
         for j in np.arange(size_hidden):
@@ -79,13 +89,6 @@ def backProp(weights, result_f, x, y):
     db1 = np.sum(dz1, axis = 1, keepdims = True)  # derivative of error wrt bias of hidden layer
     params = {"dw2":dw2, "db2":db2, "dw1":dw1, "db1":db1}
     return params
-
-def plotCost(costs):
-    plot.scatter(costs[:, 0], costs[:, 1])
-    plot.xlabel('Iterantion')
-    plot.ylabel('Cost')
-    plot.show(block = False)
-    return
 
 def calculateCost(a, y):
     cost = np.sum(np.multiply(-y, np.log(a)) - np.multiply((1 - y),np.log(1 - a)), axis = 1, keepdims = True)/y.shape[1]
